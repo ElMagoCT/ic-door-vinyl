@@ -1,0 +1,614 @@
+<title>IC Door Vinyl</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<script src="https://cdn.jsdelivr.net/npm/clipper-lib@6.4.2/clipper.js"></script>
+<style>
+/* Layout: a sign-shop cutting table. Controls on the left like a job ticket, the door glass on a green cutting mat on the right. */
+:root{
+  --bg:#eef0ec; --panel:#f8f9f6; --ink:#1c2420; --muted:#5d6862; --line:#d3d8d2;
+  --mat:#2e5a4c; --mat-grid:rgba(255,255,255,.10); --mat-grid-strong:rgba(255,255,255,.22);
+  --accent:#b01f2e; --accent-ink:#fff; --ok:#1f7a4a; --ok-bg:#e3f1e8; --bad:#b3261e; --bad-bg:#fbe5e2; --warn:#8a5a00; --warn-bg:#fbf0d9;
+  --display:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
+  --body:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#141917; --panel:#1b211e; --ink:#e4e9e5; --muted:#99a49e; --line:#2f3833;
+  --mat:#1f3f35; --mat-grid:rgba(255,255,255,.07); --mat-grid-strong:rgba(255,255,255,.16);
+  --accent:#e0485a; --accent-ink:#fff; --ok:#6fd39a; --ok-bg:#183326; --bad:#ff8a80; --bad-bg:#3a1c1a; --warn:#f2c46b; --warn-bg:#3a2e14; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#141917; --panel:#1b211e; --ink:#e4e9e5; --muted:#99a49e; --line:#2f3833;
+  --mat:#1f3f35; --mat-grid:rgba(255,255,255,.07); --mat-grid-strong:rgba(255,255,255,.16);
+  --accent:#e0485a; --accent-ink:#fff; --ok:#6fd39a; --ok-bg:#183326; --bad:#ff8a80; --bad-bg:#3a1c1a; --warn:#f2c46b; --warn-bg:#3a2e14; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--body);margin:0}
+.wrap{max-width:1380px;margin:0 auto;padding-block:28px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--display);font-weight:700;letter-spacing:.01em;text-wrap:balance;margin:0}
+h1{font-size:clamp(34px,5vw,52px);line-height:1}
+h2{font-size:28px;line-height:1.1}
+h3{font-size:18px;text-transform:uppercase;letter-spacing:.08em;font-weight:600}
+.lede{color:var(--muted);max-width:68ch;margin:10px 0 0}
+.mono,.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+header.top{display:flex;flex-wrap:wrap;gap:18px 32px;align-items:end;justify-content:space-between;margin-bottom:22px}
+.spec{display:flex;flex-wrap:wrap;gap:8px}
+.spec span{font:500 12px/1 var(--mono);border:1px solid var(--line);background:var(--panel);padding:7px 9px;border-radius:4px}
+.spec b{color:var(--accent);font-weight:500}
+
+.studio{display:grid;grid-template-columns:340px minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:900px){.studio{grid-template-columns:minmax(0,1fr)}}
+.ticket{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:18px;min-width:0}
+.group{display:flex;flex-direction:column;gap:10px}
+.group+.group{border-top:1px dashed var(--line);padding-top:16px}
+.tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.tabs button{font:600 15px/1.15 var(--display);letter-spacing:.03em;text-align:left;padding:9px 10px;border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:6px;cursor:pointer}
+.tabs button small{display:block;font:400 11px/1.3 var(--body);letter-spacing:0;color:var(--muted);margin-top:2px}
+.tabs button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.tabs button[aria-pressed="true"] small{color:var(--accent-ink);opacity:.85}
+.tabs button:focus-visible,.seg button:focus-visible,.btn:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.ctl{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;align-items:center}
+.ctl label{font-size:13px;font-weight:500}
+.ctl output{font:500 12px var(--mono);color:var(--muted);text-align:right;white-space:nowrap}
+.ctl input[type=range]{grid-column:1/-1;width:100%;accent-color:var(--accent);margin:2px 0}
+.ctl .hint{grid-column:1/-1;font-size:11.5px;color:var(--muted);margin-top:-2px}
+.seg{display:flex;flex-wrap:wrap;gap:4px}
+.seg button{font:500 12.5px var(--body);padding:6px 9px;border:1px solid var(--line);border-radius:5px;background:transparent;color:var(--ink);cursor:pointer}
+.seg button[aria-pressed="true"]{border-color:var(--ink);background:var(--ink);color:var(--panel)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.field{display:flex;flex-direction:column;gap:3px;font-size:12.5px;font-weight:500;min-width:0}
+.field input,.field select{font:14px var(--body);padding:6px 8px;border:1px solid var(--line);border-radius:5px;background:var(--bg);color:var(--ink);width:100%}
+.check{display:flex;gap:8px;align-items:center;font-size:13px}
+.swatches{display:flex;gap:6px;flex-wrap:wrap}
+.swatches button{width:34px;height:34px;border-radius:50%;border:2px solid var(--line);cursor:pointer;padding:0}
+.swatches button[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 2px var(--panel) inset}
+
+.bench{display:flex;flex-direction:column;gap:12px;min-width:0}
+.mat{position:relative;background-color:var(--mat);border-radius:8px;overflow:hidden;
+  background-image:linear-gradient(var(--mat-grid) 1px,transparent 1px),linear-gradient(90deg,var(--mat-grid) 1px,transparent 1px),
+  linear-gradient(var(--mat-grid-strong) 1px,transparent 1px),linear-gradient(90deg,var(--mat-grid-strong) 1px,transparent 1px);
+  background-size:16px 16px,16px 16px,80px 80px,80px 80px;height:min(78vh,860px);min-height:420px}
+.mat svg{position:absolute;inset:0;width:100%;height:100%}
+.mat .corner{position:absolute;left:12px;top:10px;font:500 11px var(--mono);color:rgba(255,255,255,.7);letter-spacing:.04em}
+.status{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:6px;font:500 12px/1.2 var(--body);padding:6px 9px;border-radius:999px;border:1px solid transparent}
+.chip.ok{background:var(--ok-bg);color:var(--ok)}
+.chip.bad{background:var(--bad-bg);color:var(--bad);border-color:var(--bad)}
+.chip.warn{background:var(--warn-bg);color:var(--warn)}
+.chip i{font-style:normal;font-family:var(--mono);font-size:11px}
+.meta{display:flex;flex-wrap:wrap;gap:6px 22px;font-size:13px;color:var(--muted)}
+.meta b{color:var(--ink);font-family:var(--mono);font-weight:500}
+.actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.btn{font:600 14px var(--body);padding:9px 14px;border-radius:6px;border:1px solid var(--ink);background:var(--ink);color:var(--panel);cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ink)}
+.toast{font-size:13px;color:var(--ok)}
+textarea.export{width:100%;height:110px;font:11px/1.35 var(--mono);background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:8px}
+
+section.block{margin-top:48px;display:flex;flex-direction:column;gap:14px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;overflow:hidden;display:flex;flex-direction:column;min-width:0}
+.card .art{aspect-ratio:1/1;max-width:100%;background:#25313a;display:grid;place-items:center;padding:16px}
+.card .art svg{width:100%;height:100%}
+.card .txt{padding:10px 12px 12px;display:flex;flex-direction:column;gap:4px}
+.card .txt b{font:600 17px/1.15 var(--display);letter-spacing:.02em}
+.card .txt span{font-size:12.5px;color:var(--muted)}
+.card .txt .mono{font-size:11.5px}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:8px;background:var(--panel)}
+table{border-collapse:collapse;width:100%;font-size:13px;min-width:640px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:600 12px var(--body);text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+td.num{white-space:nowrap}
+tr:last-child td{border-bottom:0}
+.notes{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.note{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px 16px;font-size:13.5px;min-width:0}
+.note h3{margin-bottom:6px}
+.note ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+<header class="top">
+  <div>
+    <h1>IC Storage Room · Door Vinyl</h1>
+    <p class="lede">Robotics, CubeSat, RC and Rocketry in one cut colour on the glass door. Pick a concept, move the sliders, and the rule chips under the door tell you right away if a setting would make a piece too thin to cut or too wide for the roll.</p>
+  </div>
+  <div class="spec" aria-label="Cut rules">
+    <span>min feature <b>0.5 mm</b></span>
+    <span>under 1 mm only if run &lt; <b>10 mm</b></span>
+    <span>roll <b>12 in</b> (11.5 usable)</span>
+  </div>
+</header>
+
+<div class="studio">
+  <form class="ticket" id="ticket" onsubmit="return false">
+    <div class="group">
+      <h3>Concept</h3>
+      <div class="tabs" id="tabs"></div>
+    </div>
+    <div class="group">
+      <h3>Logo versions</h3>
+      <div class="field"><span>Robotics</span><div class="seg" id="var-bb"></div></div>
+      <div class="field"><span>CubeSat</span><div class="seg" id="var-cs"></div></div>
+      <div class="field"><span>RC</span><div class="seg" id="var-rc"></div></div>
+    </div>
+    <div class="group" id="layout-ctl"><h3>Layout</h3></div>
+    <div class="group">
+      <h3>Labels</h3>
+      <label class="check"><input type="checkbox" id="labelsOn" checked> Show club names</label>
+      <div id="label-ctl"></div>
+      <div class="row2">
+        <label class="field">Robotics<input id="lt-bb" value="ROBOTICS" maxlength="18"></label>
+        <label class="field">CubeSat<input id="lt-cs" value="CUBESAT" maxlength="18"></label>
+        <label class="field">RC<input id="lt-rc" value="RC CLUB" maxlength="18"></label>
+        <label class="field">Rocketry<input id="lt-rk" value="ROCKETRY" maxlength="18"></label>
+      </div>
+    </div>
+    <div class="group">
+      <h3>Room label</h3>
+      <label class="check"><input type="checkbox" id="titleOn" checked> Show the room name</label>
+      <label class="field">Text<input id="titleText" value="IC STORAGE ROOM" maxlength="32"></label>
+      <div class="field"><span>Style</span><div class="seg" id="titleStyle"></div></div>
+      <div id="title-ctl"></div>
+      <div class="field"><span>Place it</span><div class="seg" id="titlePos"></div></div>
+      <div id="title-xy"></div>
+    </div>
+    <div class="group">
+      <h3>Door &amp; vinyl</h3>
+      <div class="row2">
+        <label class="field">Glass width (in)<input id="glassW" type="number" min="8" max="60" step="0.25" value="30"></label>
+        <label class="field">Glass height (in)<input id="glassH" type="number" min="8" max="90" step="0.25" value="50"></label>
+      </div>
+      <div class="field"><span>Vinyl</span><div class="swatches" id="swatches"></div></div>
+      <div class="field"><span>Behind the glass</span><div class="seg" id="room"></div></div>
+      <div class="field"><span>View</span><div class="seg" id="view"></div></div>
+      <label class="check"><input type="checkbox" id="rollGuide" checked> Show the 12 in roll</label>
+    </div>
+  </form>
+
+  <div class="bench">
+    <div class="mat" id="mat"><div class="corner" id="matlabel"></div><svg id="stage" role="img" aria-label="Door glass preview"></svg></div>
+    <div class="status" id="status" aria-live="polite"></div>
+    <div class="meta" id="meta"></div>
+    <div class="actions">
+      <button class="btn" type="button" id="copy">Copy cut SVG</button>
+      <button class="btn ghost" type="button" id="download" hidden>Download SVG</button>
+      <button class="btn ghost" type="button" id="reset">Reset this concept</button>
+      <span class="toast" id="toast"></span>
+    </div>
+    <textarea class="export" id="exportbox" hidden readonly aria-label="Cut SVG text"></textarea>
+  </div>
+</div>
+
+<section class="block">
+  <h2>Logo options</h2>
+  <p class="lede" style="margin:0">Each logo was redrawn as one cut colour at 200 mm wide (Rocketry 140 mm) and checked. Robotics and CubeSat needed real simplification, so each has two versions. The minimum is the smallest size that still passes every rule.</p>
+  <div class="cards" id="cards"></div>
+</section>
+
+<section class="block">
+  <h2>Verified files</h2>
+  <p class="lede" style="margin:0">These are the SVGs in the <span class="mono">ic-door-vinyl/</span> folder. Each finished file was rendered again at 0.05 mm per pixel, then every vinyl stroke and every gap was measured against the rules.</p>
+  <div class="tablewrap"><table id="vtable"><thead><tr><th>File</th><th>Size</th><th>Tiles checked</th><th>Rule violations</th><th>Fits 12 in roll</th></tr></thead><tbody></tbody></table></div>
+</section>
+
+<section class="block">
+  <h2>How the checks work</h2>
+  <div class="notes">
+    <div class="note"><h3>Thickness</h3><ul>
+      <li>Width is measured with a rolling disk at exactly 0.5 mm, with no slack. If no 0.5 mm disk fits anywhere over a spot, that spot is too thin.</li>
+      <li>Spots under 1 mm are traced along their centre line. If one runs 10 mm or longer, it fails.</li>
+      <li>Gaps between pieces get the same test, since a 0.3 mm gap won't weed either.</li>
+      <li>Letters are DIN Condensed Bold, run through the same checker at 10 mm tall (the minimum). Strokes there are already 1.4 mm, so only sharp inside notches change.</li>
+      <li>Sharp corners always taper to zero, so a tip shorter than 0.6 mm counts as a corner. Anything longer counts as a sliver.</li>
+    </ul></div>
+    <div class="note"><h3>What changed in the art</h3><ul>
+      <li>Broncobots: the traced gear was replaced with a clean 13-tooth gear fitted to the original. The horse shading became cut-outs.</li>
+      <li>BrophySat-1: the colours collapse to one. Version B keeps only the line work and adds round stars.</li>
+      <li>Long hairlines were thickened to 1.1 mm. Gaps under 0.6 mm were closed and slivers under 0.6 mm removed.</li>
+    </ul></div>
+    <div class="note"><h3>About the sliders</h3><ul>
+      <li>Logos only shrink as far as their measured minimum, found by stepping each one down 2.5% at a time until the strict check fails. Below that, the editor switches to a version re-thickened at 125 mm.</li>
+      <li>Every scaled path is re-baked into the exported file, with no transforms left for the cutter to misread.</li>
+      <li>The verified files are the ground truth. If you export a new layout, have me run it through the checker before cutting.</li>
+    </ul></div>
+  </div>
+</section>
+</div>
+
+<script>
+const DATA = /*DATA*/null;
+const $ = s => document.querySelector(s);
+const IN = 25.4, ROLL_USABLE = 292.1, W11 = 279.4;
+const LOGOS = DATA.logos;
+const CLUB = {bb:'Robotics', cs:'CubeSat', rc:'RC', rk:'Rocketry'};
+const VARS = {bb:[['bb1','A · solid gear'],['bb2','B · outline gear']], cs:[['cs1','A · solid patch'],['cs2','B · line patch']], rc:[['rc1','A · mark'],['rc2','B · tile']]};
+const VINYL = [['#f3f5f6','White'],['rgba(236,242,245,.62)','Frosted'],['#16191b','Black'],['#be1e2d','Brophy red'],['#c7a24c','Gold']];
+const ROOM = [['dark','Dark room'],['bright','Bright hallway']];
+const VIEW = [['door','Whole door'],['close','Close-up']];
+const TSTYLE = [['line','One line'],['stack','Big IC over the rest']];
+const TPOS = [['above','Above design'],['below','Below design'],['top','Top of glass'],['middle','Middle'],['bottom','Bottom of glass']];
+
+const CONCEPTS = {
+  stack:  {name:'Stacked', sub:'one 11 in column', defaults:{S:200, gap:45, width:279.4}},
+  corners:{name:'Four corners', sub:'one logo per corner', defaults:{S:200, margin:38}},
+  chip:   {name:'IC chip circuit', sub:'clubs wired to the chip', defaults:{S:165, trace:3.2, pins:8}},
+  band:   {name:'Privacy band', sub:'logos cut out of a band', defaults:{LH:158, len:30, bh:279.4, radius:10}},
+  gears:  {name:'Gear train', sub:'four meshing gears', defaults:{WB:190, tcs:14, trc:13, trk:13, clr:2, ring:12.3}},
+};
+let state = {concept:'stack', var:{bb:'bb1',cs:'cs1',rc:'rc1'}, vinyl:0, room:'dark', view:'door',
+  title:{on:true, text:'IC STORAGE ROOM', style:'line', cap:28, track:3, pos:'above', x:15, y:4}, labelsOn:true, cap:14, track:4,
+  params:JSON.parse(JSON.stringify(Object.fromEntries(Object.entries(CONCEPTS).map(([k,c])=>[k,c.defaults]))))};
+try{ const s=JSON.parse(localStorage.getItem('icvinyl.v1')||'null'); if(s&&s.params) state={...state,...s,params:{...state.params,...s.params},title:{...state.title,...(s.title||{})}}; }catch(e){}
+const save=()=>{try{localStorage.setItem('icvinyl.v1',JSON.stringify(state))}catch(e){}};
+
+/* ---------- geometry helpers ---------- */
+const PAIR=/(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/g;
+const f3=v=>(Math.round(v*1000)/1000).toString();
+function bake(d,k,dx,dy){return d.replace(PAIR,(m,a,b)=>f3(a*k+dx)+','+f3(b*k+dy));}
+// choose the source art for a requested width: the 200 mm original down to its minimum, then the pre-thickened small version
+function src(v,w){const L=LOGOS[v]; return (w>=L.native.min_w-1e-6)?L.native:L.small;}
+function logoMinW(v){return LOGOS[v].small.min_w;}
+function logoItem(v,w,x,y){const s=src(v,w),k=w/s.w; return {type:'logo',v,src:s,k,x,y,w,h:s.h*k};}
+function sizeByMax(v,S){const L=LOGOS[v].native; return L.w>=L.h?S:S*L.w/L.h;}   // S = the longer side
+function textItem(s,x,y,cap,track,anchor){
+  s=[...s].filter(c=>DATA.glyphs[c]).join('');
+  let W=0; for(const c of s)W+=DATA.glyphs[c].adv*cap; W+=track*Math.max(0,s.length-1);
+  let cx={middle:x-W/2,start:x,end:x-W}[anchor||'middle'], d='';
+  for(const c of s){d+=bake(DATA.glyphs[c].d,cap,cx,y); cx+=DATA.glyphs[c].adv*cap+track;}
+  let gap=1e9; for(let i=1;i<s.length;i++){if(s[i]===' '||s[i-1]===' ')continue; gap=Math.min(gap,DATA.glyphs[s[i-1]].sb[1]*cap+track+DATA.glyphs[s[i]].sb[0]*cap);}
+  return {type:'path',d,w:W,box:[x-(anchor==='middle'?W/2:anchor==='end'?W:0),y-cap,W,cap],text:true,gap,cap,str:s};
+}
+function textWidth(s,cap,track){s=[...s].filter(c=>DATA.glyphs[c]);let W=0;for(const c of s)W+=DATA.glyphs[c].adv*cap;return W+track*Math.max(0,s.length-1);}
+/* room label: built around its centre (cx, cy) in glass coordinates */
+function titleSize(){const T=state.title, words=T.text.trim().toUpperCase().split(/\s+/);
+  if(T.style==='stack'&&words.length>1){const big=T.cap*2.4, gap=T.cap*0.45;
+    return {w:Math.max(textWidth(words[0],big,T.track*1.5),textWidth(words.slice(1).join(' '),T.cap,T.track)),h:big+gap+T.cap};}
+  return {w:textWidth(words.join(' '),T.cap,T.track),h:T.cap};}
+function titleItems(cx,cy){const T=state.title, words=T.text.trim().toUpperCase().split(/\s+/), sz=titleSize(), top=cy-sz.h/2;
+  if(T.style==='stack'&&words.length>1){const big=T.cap*2.4, gap=T.cap*0.45;
+    return [textItem(words[0],cx,top+big,big,T.track*1.5),textItem(words.slice(1).join(' '),cx,top+big+gap+T.cap,T.cap,T.track)];}
+  return [textItem(words.join(' '),cx,top+T.cap,T.cap,T.track)];}
+function designOffset(lay,gw,gh){return lay.isGlass?[0,0]:[(gw-lay.W)/2,(gh-lay.H)/2];}
+function presetCentre(pos,lay,gw,gh){const [ox,oy]=designOffset(lay,gw,gh), sz=titleSize(), g=30;
+  const c={above:[gw/2,oy-g-sz.h/2],below:[gw/2,oy+lay.H+g+sz.h/2],top:[gw/2,60+sz.h/2],middle:[gw/2,gh/2],bottom:[gw/2,gh-60-sz.h/2]}[pos];
+  if(lay.isGlass&&pos==='above')return [gw/2,60+sz.h/2]; if(lay.isGlass&&pos==='below')return [gw/2,gh-60-sz.h/2];
+  return c;}
+const bboxCache=new WeakMap();
+function itemBox(it){if(it.type==='logo')return [it.x,it.y,it.w,it.h]; if(it.box)return it.box;
+  if(bboxCache.has(it))return bboxCache.get(it); let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;
+  for(const m of it.d.matchAll(PAIR)){const x=+m[1],y=+m[2];if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y;}
+  const b=[x0,y0,x1-x0,y1-y0]; bboxCache.set(it,b); return b;}
+function boxGap(a,b){const dx=Math.max(a[0]-(b[0]+b[2]),b[0]-(a[0]+a[2]),0), dy=Math.max(a[1]-(b[1]+b[3]),b[1]-(a[1]+a[3]),0);
+  return (dx>0||dy>0)?Math.hypot(dx,dy):-Math.min(a[0]+a[2]-b[0],b[0]+b[2]-a[0],a[1]+a[3]-b[1],b[1]+b[3]-a[1]);}
+function label(key){const el=$('#lt-'+key);return (el.value||'').toUpperCase();}
+function rectD(x,y,w,h,r){if(!r)return `M${f3(x)},${f3(y)} L${f3(x+w)},${f3(y)} L${f3(x+w)},${f3(y+h)} L${f3(x)},${f3(y+h)}Z`;
+  const k=.5523*r;return `M${f3(x+r)},${f3(y)} L${f3(x+w-r)},${f3(y)} C${f3(x+w-r+k)},${f3(y)} ${f3(x+w)},${f3(y+r-k)} ${f3(x+w)},${f3(y+r)} L${f3(x+w)},${f3(y+h-r)} C${f3(x+w)},${f3(y+h-r+k)} ${f3(x+w-r+k)},${f3(y+h)} ${f3(x+w-r)},${f3(y+h)} L${f3(x+r)},${f3(y+h)} C${f3(x+r-k)},${f3(y+h)} ${f3(x)},${f3(y+h-r+k)} ${f3(x)},${f3(y+h-r)} L${f3(x)},${f3(y+r)} C${f3(x)},${f3(y+r-k)} ${f3(x+r-k)},${f3(y)} ${f3(x+r)},${f3(y)}Z`;}
+function circlePts(cx,cy,r,n=48){const p=[];for(let i=0;i<n;i++){const t=i/n*2*Math.PI;p.push([cx+r*Math.cos(t),cy+r*Math.sin(t)]);}return p;}
+function circleD(cx,cy,r){const k=.5523*r;return `M${f3(cx+r)},${f3(cy)} C${f3(cx+r)},${f3(cy+k)} ${f3(cx+k)},${f3(cy+r)} ${f3(cx)},${f3(cy+r)} C${f3(cx-k)},${f3(cy+r)} ${f3(cx-r)},${f3(cy+k)} ${f3(cx-r)},${f3(cy)} C${f3(cx-r)},${f3(cy-k)} ${f3(cx-k)},${f3(cy-r)} ${f3(cx)},${f3(cy-r)} C${f3(cx+k)},${f3(cy-r)} ${f3(cx+r)},${f3(cy-k)} ${f3(cx+r)},${f3(cy)}Z`;}
+const polyD=pts=>'M'+pts.map(p=>f3(p[0])+','+f3(p[1])).join(' L')+'Z';
+
+/* ---------- rules collected while laying out ---------- */
+function Rules(){this.list=[];}
+Rules.prototype.add=function(ok,text,detail,level){this.list.push({ok,text,detail,level:ok?'ok':(level||'bad')});};
+
+function logoRules(R,items){
+  let worst=null;
+  for(const it of items.filter(i=>i.type==='logo')){const m=logoMinW(it.v); if(it.w<m-1e-6){worst=it;break;}}
+  const mins=items.filter(i=>i.type==='logo').map(i=>`${CLUB[i.v.slice(0,2)]} ${i.w.toFixed(0)} mm`).join(' · ');
+  R.add(!worst,'Logos above minimum size',worst?`${CLUB[worst.v.slice(0,2)]} is ${worst.w.toFixed(0)} mm, minimum ${logoMinW(worst.v).toFixed(0)} mm`:mins);
+}
+function textRule(R){ if(state.labelsOn) R.add(state.cap>=DATA.labelMinCap,'Label strokes thick enough',`cap height ${state.cap} mm (min ${DATA.labelMinCap} mm)`); }
+
+/* ---------- layouts ---------- */
+const L = {};
+L.stack=function(p,R){
+  const vs=[state.var.bb,state.var.cs,state.var.rc,'rk'], keys=['bb','cs','rc','rk'];
+  const W=p.width, M=20, GL=12, cap=state.cap, items=[];
+  let y=M;
+  vs.forEach((v,i)=>{const w=Math.min(sizeByMax(v,p.S),W-16); const it=logoItem(v,w,(W-w)/2,y); items.push(it); y+=it.h;
+    if(state.labelsOn){y+=GL+cap; items.push(textItem(label(keys[i]),W/2,y,cap,state.track));}
+    if(i<3)y+=p.gap;});
+  const H=y+M;
+  R.add(W<=ROLL_USABLE,'Strip fits the roll',`${(W/IN).toFixed(2)} in wide · ${(H/IN).toFixed(1)} in of roll`);
+  return {W,H,items,strip:'v'};
+};
+L.corners=function(p,R){
+  const W=+state.glassW*IN, H=+state.glassH*IN, M=p.margin, cap=Math.min(state.cap,14), items=[];
+  const spec=[[state.var.bb,'bb','L','T'],[state.var.cs,'cs','R','T'],[state.var.rc,'rc','L','B'],['rk','rk','R','B']];
+  for(const [v,k,hz,vt] of spec){
+    const w=sizeByMax(v,p.S), it0=logoItem(v,w,0,0);
+    const tot=it0.h+(state.labelsOn?10+cap:0);
+    const x=hz==='L'?M:W-M-w, y=vt==='T'?M:H-M-tot;
+    items.push(logoItem(v,w,x,y));
+    if(state.labelsOn) items.push(textItem(label(k),x+w/2,y+it0.h+10+cap,cap,state.track*0.875));
+  }
+  const fits=2*M+2*p.S+20<=Math.min(W,H)+0.01 && 2*M+2*p.S+20<=W;
+  R.add(fits,'Corner logos don\'t collide',fits?`${(p.S/IN).toFixed(1)} in logos, ${(M/IN).toFixed(1)} in from the edges`:'logos overlap: shrink them or enlarge the glass');
+  R.add(p.S<=ROLL_USABLE,'Each corner piece fits the roll',`largest piece ${(p.S/IN).toFixed(1)} in`);
+  return {W,H,items,strip:'none',isGlass:true};
+};
+L.chip=function(p,R){
+  const W=W11, TR=p.trace, LW=p.S, items=[];
+  const BX=25,BY=40,BW=W-50,BH=112,band=4.5, nx=BX+BW/2, r1=11, npins=p.pins, pw=10, ph=16;
+  const pitch=(BW-40)/(npins-1), pinx=[...Array(npins)].map((_,i)=>BX+20+i*pitch);
+  const C=ClipperLib, S=1000, toC=pts=>pts.map(q=>({X:Math.round(q[0]*S),Y:Math.round(q[1]*S)}));
+  const solids=[], holes=[];
+  const rr=(x,y,w,h,r)=>{const pts=[];const seg=8;const c=[[x+w-r,y+r,-90],[x+w-r,y+h-r,0],[x+r,y+h-r,90],[x+r,y+r,180]];
+    for(const [cx,cy,a0] of c)for(let i=0;i<=seg;i++){const t=(a0+i*90/seg)*Math.PI/180;pts.push([cx+r*Math.cos(t),cy+r*Math.sin(t)]);}return pts;};
+  solids.push(rr(BX,BY,BW,BH,6)); holes.push(rr(BX+band,BY+band,BW-2*band,BH-2*band,3));
+  const semi=r=>{const pts=[];for(let i=0;i<=40;i++){const t=Math.PI*i/40;pts.push([nx+r*Math.cos(t),BY+band+r*Math.sin(t)]);}return pts;};
+  const extra=[semi(r1+band)], extraHoles=[semi(r1)];
+  for(const px of pinx){extra.push([[px-pw/2,BY-ph],[px+pw/2,BY-ph],[px+pw/2,BY+1],[px-pw/2,BY+1]]);
+    extra.push([[px-pw/2,BY+BH-1],[px+pw/2,BY+BH-1],[px+pw/2,BY+BH+ph],[px-pw/2,BY+BH+ph]]);}
+  const lines=[], vias=[];
+  pinx.forEach((px,i)=>{if(i%2){lines.push([[px,BY-ph+1],[px,BY-ph-14+3.5]]);vias.push([px,BY-ph-14,5,2]);}});
+  const LX=14, lanes=[0,1,2,3].map(k=>W-14-45+15*k);
+  let y=BY+BH+ph+40; const pads=[];
+  const vs=[state.var.bb,state.var.cs,state.var.rc,'rk'], keys=['bb','cs','rc','rk'];
+  vs.forEach((v,i)=>{const w=sizeByMax(v,LW); const it=logoItem(v,w,LX+(LW-w)/2,y); items.push(it);
+    if(state.labelsOn) items.push(textItem(label(keys[i]),LX+LW/2,y+it.h+10+Math.min(state.cap,10),Math.min(state.cap,10),state.track*.75));
+    pads.push([it.x+it.w,y+it.h/2]); y+=it.h+20+38;});
+  const H=y-38+25, y0=BY+BH+ph;
+  const nsrc=Math.min(4,npins-4>=0?4:npins);
+  for(let k=0;k<4;k++){const sx=pinx[npins-4+k], lx=lanes[k], ya=y0+8, yb=ya+(lx-sx), [px,py]=pads[k], padx=px+16, ex=padx+6;
+    lines.push([[sx,y0-1],[sx,ya],[lx,yb],[lx,py-(lx-ex)],[ex,py]]); vias.push([padx,py,6.5,2.4]);}
+  for(let i=0;i<npins-4;i++){const px=pinx[i];lines.push([[px,y0-1],[px,y0+12]]);vias.push([px,y0+16.5,5,2]);}
+  // union with Clipper
+  const co=new C.ClipperOffset(2,0.25*S); co.AddPaths(lines.map(toC),C.JoinType.jtRound,C.EndType.etOpenButt);
+  const traces=new C.Paths(); co.Execute(traces,TR/2*S);
+  let cl=new C.Clipper(), out=new C.Paths();
+  cl.AddPaths(toC.length?[toC(solids[0])]:[],C.PolyType.ptSubject,true); cl.AddPaths([toC(holes[0])],C.PolyType.ptClip,true);
+  cl.Execute(C.ClipType.ctDifference,out,C.PolyFillType.pftNonZero,C.PolyFillType.pftNonZero);
+  const add=paths=>{const c2=new C.Clipper(),o=new C.Paths();c2.AddPaths(out,C.PolyType.ptSubject,true);c2.AddPaths(paths,C.PolyType.ptClip,true);c2.Execute(C.ClipType.ctUnion,o,C.PolyFillType.pftNonZero,C.PolyFillType.pftNonZero);out=o;};
+  const sub=paths=>{const c2=new C.Clipper(),o=new C.Paths();c2.AddPaths(out,C.PolyType.ptSubject,true);c2.AddPaths(paths,C.PolyType.ptClip,true);c2.Execute(C.ClipType.ctDifference,o,C.PolyFillType.pftNonZero,C.PolyFillType.pftNonZero);out=o;};
+  add(extra.map(toC)); sub(extraHoles.map(toC)); add(traces); add(vias.map(([x,y,ro])=>toC(circlePts(x,y,ro)))); sub(vias.map(([x,y,ro,ri])=>toC(circlePts(x,y,ri))));
+  const chipD=out.map(path=>'M'+path.map(q=>f3(q.X/S)+','+f3(q.Y/S)).join(' L')+'Z').join('');
+  items.push({type:'path',d:chipD});
+  items.push(textItem('IC',nx,BY+BH/2+18,40,4));
+  items.push(textItem('ROBOTICS · CUBESAT · RC · ROCKETRY',nx,BY+BH-14,10,1.0));
+  items.push(textItem('1',pinx[0],BY+band+18,10,0));
+  R.add(TR>=1.0,'Traces at least 1 mm',`${TR.toFixed(1)} mm traces (they run far past 10 mm)`);
+  const clear=lanes[0]-TR/2-(Math.max(...pads.map(q=>q[0]))+16+6.5);
+  R.add(clear>=3,'Traces clear of logos',clear>=3?`${clear.toFixed(1)} mm between the nearest pad and lane`:'logos are too wide for the trace lanes: shrink them');
+  R.add(W<=ROLL_USABLE,'Strip fits the roll',`${(W/IN).toFixed(2)} in wide · ${(H/IN).toFixed(1)} in of roll`);
+  return {W,H,items,strip:'v'};
+};
+L.band=function(p,R){
+  const W=p.len*IN, H=p.bh, LH=p.LH, cap=Math.min(state.cap,16), items=[];
+  const vs=[state.var.bb,state.var.cs,state.var.rc,'rk'], keys=['bb','cs','rc','rk'];
+  const ws=vs.map(v=>{const n=LOGOS[v].native;return LH*n.w/n.h;});
+  const gap=(W-ws.reduce((a,b)=>a+b,0))/(vs.length+1);
+  const blockH=LH+(state.labelsOn?12+cap:0), top=(H-blockH)/2;
+  let d=rectD(0,0,W,H,p.radius), x=gap;
+  vs.forEach((v,i)=>{const it=logoItem(v,ws[i],x,top+(LH-ws[i]*LOGOS[v].native.h/LOGOS[v].native.w)/2); items.push({...it,ghost:true});
+    d+=bake(it.src.d,it.k,it.x,it.y);
+    if(state.labelsOn) d+=textItem(label(keys[i]),x+ws[i]/2,top+LH+12+cap,cap,state.track*.875).d;
+    x+=ws[i]+gap;});
+  items.push({type:'path',d,band:true});
+  R.add(gap>=12,'Logos fit in the band',gap>=12?`${gap.toFixed(0)} mm between logos`:'logos are crowded: lengthen the band or shrink the logos');
+  R.add(top>=12,'Band margin',top>=12?`${top.toFixed(0)} mm of frost above and below`:'logos almost touch the band edge');
+  R.add(Math.min(W,H)<=ROLL_USABLE,'Band fits the roll',`${(H/IN).toFixed(2)} in tall, cut along a ${(W/IN).toFixed(1)} in length of roll`);
+  return {W,H,items,strip:'h'};
+};
+L.gears=function(p,R){
+  const G=DATA.gear, WB=p.WB, s=WB/G.vb[2];
+  const m=(G.RR+G.RT)/G.N*s, add=(G.RT-G.RR)/2*s, hwr=G.HW_ROOT*s, hwt=G.HW_TIP*s, ring=p.ring, CLR=p.clr, M=8, W=W11;
+  const items=[], gearsInfo=[];
+  const gearPts=(cx,cy,N,ph)=>{const Rp=m*N/2,Rr=Rp-add,Rt=Rp+add,pts=[];const ar=Math.asin(hwr/Rr),at=Math.asin(hwt/Rt);
+    for(let k=0;k<N;k++){const c=(ph+k*360/N)*Math.PI/180,nx=(ph+(k+1)*360/N)*Math.PI/180;
+      pts.push([Rr,c-ar]);for(let i=0;i<10;i++)pts.push([Rt,c-at+2*at*i/9]);pts.push([Rr,c+ar]);
+      for(let i=1;i<19;i++)pts.push([Rr,c+ar+(nx-ar-c-ar)*i/19]);}
+    return pts.map(([r,t])=>[cx+r*Math.cos(t),cy+r*Math.sin(t)]);};
+  const segDist=(p,a,b)=>{const vx=b[0]-a[0],vy=b[1]-a[1],t=Math.max(0,Math.min(1,((p[0]-a[0])*vx+(p[1]-a[1])*vy)/(vx*vx+vy*vy)));return Math.hypot(p[0]-a[0]-t*vx,p[1]-a[1]-t*vy);};
+  const inPoly=(p,P)=>{let c=false;for(let i=0,j=P.length-1;i<P.length;j=i++){const a=P[i],b=P[j];if((a[1]>p[1])!==(b[1]>p[1])&&p[0]<(b[0]-a[0])*(p[1]-a[1])/(b[1]-a[1])+a[0])c=!c;}return c;};
+  function clearance(A,B,ax,ay,bx,by,RtA,RtB){let d=1e9;const D=Math.hypot(ax-bx,ay-by);
+    const one=(P,Q,qx,qy,RQ)=>{for(const q of P){const r=Math.hypot(q[0]-qx,q[1]-qy);if(r>RQ+1)continue;if(inPoly(q,Q))return -1;
+      for(let j=0;j<Q.length;j++){const a=Q[j];if(Math.abs(a[0]-q[0])>d+20||Math.abs(a[1]-q[1])>d+20)continue;const e=segDist(q,a,Q[(j+1)%Q.length]);if(e<d)d=e;}}return d;};
+    if(one(A,B,bx,by,RtB)<0)return -1; if(one(B,A,ax,ay,RtA)<0)return -1; return d;}
+  const vB=state.var.bb, RpB=m*13/2, c0=[M+RpB+add+4,M+RpB+add+4];
+  const bbIt=logoItem(vB,WB,c0[0]-(G.C[0]-G.vb[0])*s,c0[1]-(G.C[1]-G.vb[1])*s); items.push(bbIt);
+  gearsInfo.push({cx:c0[0],cy:c0[1],Rp:RpB,Rt:RpB+add,N:13,ph:G.PH,v:vB,k:'bb',pts:gearPts(c0[0],c0[1],13,G.PH)});
+  const spec=[[state.var.cs,p.tcs,'R','cs'],[state.var.rc,p.trc,'L','rc'],['rk',p.trk,'R','rk']];
+  let ok=true, minClr=1e9;
+  for(const [v,N,side,key] of spec){
+    const prev=gearsInfo[gearsInfo.length-1], Rp=m*N/2, Rt=Rp+add;
+    const cx=side==='R'?W-M-Rt-2:M+Rt+2, dist=prev.Rp+Rp+CLR, dx=cx-prev.cx;
+    if(Math.abs(dx)>=dist){ok=false;}
+    const cy=prev.cy+Math.sqrt(Math.max(dist*dist-dx*dx,0));
+    // phase: search one tooth pitch for the angle with the most clearance to the previous gear
+    const prevPts=prev.pts||gearPts(prev.cx,prev.cy,prev.N,prev.ph); prev.pts=prevPts;
+    let ph=0,best=-1;
+    for(let i=0;i<48;i++){const t=i*360/N/48, d=clearance(gearPts(cx,cy,N,t),prevPts,cx,cy,prev.cx,prev.cy,Rt,prev.Rt);if(d>best){best=d;ph=t;}}
+    for(let i=-6;i<=6;i++){const t=ph+i*360/N/48/6, d=clearance(gearPts(cx,cy,N,t),prevPts,cx,cy,prev.cx,prev.cy,Rt,prev.Rt);if(d>best){best=d;ph=t;}}
+    const gi={cx,cy,Rp,Rt,N,ph,v,k:key}; gearsInfo.push(gi);
+    const pts=gearPts(cx,cy,N,ph), Rh=Rp-add-ring;
+    items.push({type:'path',d:polyD(pts)+circleD(cx,cy,Rh)});
+    const fw=(Rh-5)/LOGOS[v].fitR, it=logoItem(v,fw,cx-fw/2,cy-fw*LOGOS[v].native.h/LOGOS[v].native.w/2); items.push(it);
+    gi.pts=pts;
+  }
+  for(let i=1;i<gearsInfo.length;i++){const A=gearsInfo[i-1],B=gearsInfo[i];minClr=Math.min(minClr,clearance(B.pts,A.pts,B.cx,B.cy,A.cx,A.cy,B.Rt,A.Rt));}
+  // labels beside each gear, in free space
+  if(state.labelsOn){const cap=Math.min(state.cap,12);
+    gearsInfo.forEach((g,i)=>{const txt=label(g.k), w=textWidth(txt,cap,state.track*.75), left=(i%2===0);
+      const x0=left?W-M-2-w:M+2; let placed=null;
+      for(let s=0;s<=60&&!placed;s++)for(const sg of [1,-1]){const dy=sg*s*2, y=g.cy+cap/2+dy;
+        const box=[x0,y-cap,w,cap]; if(gearsInfo.every(h=>{const qx=Math.max(box[0],Math.min(h.cx,box[0]+box[2])),qy=Math.max(box[1],Math.min(h.cy,box[1]+box[3]));return Math.hypot(qx-h.cx,qy-h.cy)-h.Rt>=5;})){placed=y;break;}}
+      if(placed!==null)items.push(textItem(txt,x0,placed,cap,state.track*.75,'start'));});}
+  const last=gearsInfo[gearsInfo.length-1], H=last.cy+last.Rt+M+4;
+  const logoFit=items.filter(i=>i.type==='logo');
+  R.add(ok && minClr>=1.0,'Gears mesh without touching',ok&&minClr>=1.0?`closest tooth gap ${minClr.toFixed(1)} mm`:(minClr<0||!ok)?(ok?'teeth overlap: raise the gap between gears':'neighbouring gears can\'t reach each other across the strip: add teeth'):'tooth gap under 1 mm: raise the gap between gears');
+  R.add(ring>=1,'Gear rims at least 1 mm',`${ring.toFixed(1)} mm rims`);
+  R.add(gearsInfo.every(g=>2*g.Rt+2*M<=W+0.01),'Every gear fits the strip',gearsInfo.map(g=>`${(2*g.Rt/IN).toFixed(1)}`).join(' / ')+' in across');
+  R.add(W<=ROLL_USABLE,'Strip fits the roll',`${(W/IN).toFixed(2)} in wide · ${(H/IN).toFixed(1)} in of roll`);
+  return {W,H,items,strip:'v'};
+};
+
+/* ---------- controls ---------- */
+const CTL={
+  stack:[['S','Logo size (longer side)',[101,270,1],'mm'],['gap','Space between clubs',[20,120,1],'mm'],['width','Strip width',[200,292,0.5],'mm']],
+  corners:[['S','Logo size (longer side)',[101,300,1],'mm'],['margin','Distance from glass edge',[12,150,1],'mm']],
+  chip:[['S','Logo size (longer side)',[101,182,1],'mm'],['trace','Trace width',[1.0,6,0.1],'mm'],['pins','Pins per side',[6,10,1],'']],
+  band:[['LH','Logo height',[101,250,1],'mm'],['len','Band length',[16,48,0.25],'in'],['bh','Band height',[150,292,0.5],'mm'],['radius','Corner radius',[0,40,1],'mm']],
+  gears:[['WB','Robotics gear size',[160,260,1],'mm'],['tcs','CubeSat gear teeth',[10,18,1],''],['trc','RC gear teeth',[10,18,1],''],['trk','Rocketry gear teeth',[10,18,1],''],['clr','Gap between gears',[1.5,6,0.1],'mm'],['ring','Gear rim width',[1,22,0.1],'mm']],
+};
+function fmtVal(v,u){if(u==='in')return `${(+v).toFixed(2)} in`;if(u==='mm')return `${(+v).toFixed(v%1?1:0)} mm · ${(v/IN).toFixed(2)} in`;return `${v}`;}
+function slider(id,label,[mn,mx,st],val,unit,on,hint){
+  const w=document.createElement('div');w.className='ctl';
+  w.innerHTML=`<label for="${id}">${label}</label><output id="${id}-o">${fmtVal(val,unit)}</output><input type="range" id="${id}" min="${mn}" max="${mx}" step="${st}" value="${val}">${hint?`<div class="hint">${hint}</div>`:''}`;
+  w.querySelector('input').addEventListener('input',e=>{const v=+e.target.value;w.querySelector('output').textContent=fmtVal(v,unit);on(v);});
+  return w;
+}
+function buildControls(){
+  const box=$('#layout-ctl'); box.innerHTML='<h3>Layout</h3>';
+  const P=state.params[state.concept];
+  // size sliders stop at the highest floor among the logos in use (measured with the strict checker)
+  const vs=[state.var.bb,state.var.cs,state.var.rc,'rk'];
+  const floorS=Math.ceil(Math.max(...vs.map(v=>{const n=LOGOS[v].native;return logoMinW(v)*Math.max(1,n.h/n.w);})));
+  const floorH=Math.ceil(Math.max(...vs.map(v=>{const n=LOGOS[v].native;return logoMinW(v)*n.h/n.w;})));
+  for(const [k,lab,rng0,u] of CTL[state.concept]){
+    const rng=[...rng0]; if(k==='S')rng[0]=floorS; if(k==='LH')rng[0]=floorH; if(P[k]<rng[0])P[k]=rng[0];
+    const hint=(k==='S'||k==='LH')?'Stops at the smallest size every logo passes the rules.':(k==='trace'?'Traces are long runs, so 1 mm is the floor.':'');
+    box.appendChild(slider('p-'+k,lab,rng,P[k],u,v=>{P[k]=v;update();},hint));
+  }
+  const lc=$('#label-ctl'); lc.innerHTML='';
+  lc.appendChild(slider('cap','Letter height',[DATA.labelMinCap,24,0.5],state.cap,'mm',v=>{state.cap=v;update();},`${DATA.labelMinCap} mm minimum`));
+  lc.appendChild(slider('track','Letter spacing',[0,8,0.25],state.track,'mm',v=>{state.track=v;update();}));
+}
+function buildTitleControls(){
+  const T=state.title, tc=$('#title-ctl'); tc.innerHTML='';
+  tc.appendChild(slider('tcap','Letter height',[DATA.labelMinCap,80,0.5],T.cap,'mm',v=>{T.cap=v;update();},T.style==='stack'?'"IC" is drawn 2.4 times this height':''));
+  tc.appendChild(slider('ttrack','Letter spacing',[0,14,0.25],T.track,'mm',v=>{T.track=v;update();}));
+  seg($('#titleStyle'),TSTYLE,()=>T.style,v=>{T.style=v;buildTitleControls();});
+  seg($('#titlePos'),TPOS,()=>T.pos,v=>{T.pos=v;});
+  const xy=$('#title-xy'); xy.innerHTML='';
+  xy.appendChild(slider('tx','From the left edge of the glass',[0,state.glassW||30,0.125],T.x,'in',v=>{T.x=v;T.pos='custom';seg($('#titlePos'),TPOS,()=>T.pos,p=>{T.pos=p;});update();}));
+  xy.appendChild(slider('ty','From the top of the glass',[0,state.glassH||50,0.125],T.y,'in',v=>{T.y=v;T.pos='custom';seg($('#titlePos'),TPOS,()=>T.pos,p=>{T.pos=p;});update();},'Positions are the centre of the label. Drag to place it anywhere; a preset snaps it back.'));
+}
+function seg(el,opts,get,set){el.innerHTML='';for(const [v,lab] of opts){const b=document.createElement('button');b.type='button';b.textContent=lab;b.setAttribute('aria-pressed',get()===v);b.onclick=()=>{set(v);seg(el,opts,get,set);update();};el.appendChild(b);}}
+function buildStatic(){
+  const tabs=$('#tabs'); tabs.innerHTML='';
+  for(const [k,c] of Object.entries(CONCEPTS)){const b=document.createElement('button');b.type='button';b.innerHTML=`${c.name}<small>${c.sub}</small>`;b.setAttribute('aria-pressed',state.concept===k);
+    b.onclick=()=>{state.concept=k;buildStatic();buildControls();update();};tabs.appendChild(b);}
+  for(const k of ['bb','cs','rc']) seg($('#var-'+k),VARS[k],()=>state.var[k],v=>{state.var[k]=v;buildControls();});
+  seg($('#room'),ROOM,()=>state.room,v=>state.room=v);
+  seg($('#view'),VIEW,()=>state.view,v=>state.view=v);
+  const sw=$('#swatches'); sw.innerHTML='';
+  VINYL.forEach(([c,n],i)=>{const b=document.createElement('button');b.type='button';b.title=n;b.setAttribute('aria-label',n+' vinyl');b.style.background=c;b.setAttribute('aria-pressed',state.vinyl===i);b.onclick=()=>{state.vinyl=i;buildStatic();update();};sw.appendChild(b);});
+}
+
+/* ---------- render ---------- */
+let last=null;
+function update(){
+  state.glassW=+$('#glassW').value||30; state.glassH=+$('#glassH').value||50; state.labelsOn=$('#labelsOn').checked;
+  const R=new Rules(); const lay=L[state.concept](state.params[state.concept],R);
+  logoRules(R,lay.items); textRule(R);
+  const gw=state.glassW*IN, gh=state.glassH*IN;
+  if(!lay.isGlass) R.add(lay.W<=gw+0.01&&lay.H<=gh+0.01,'Fits the glass',`design ${(lay.W/IN).toFixed(1)} × ${(lay.H/IN).toFixed(1)} in on ${state.glassW} × ${state.glassH} in glass`,'warn');
+  lay.title=null; const T=state.title;
+  for(const id of ['tx','ty']){const el=$('#'+id); if(el){el.max=id==='tx'?state.glassW:state.glassH;}}
+  if(T.on&&T.text.trim()){
+    if(T.pos!=='custom'){const [cx,cy]=presetCentre(T.pos,lay,gw,gh); T.x=Math.round(cx/IN*8)/8; T.y=Math.round(cy/IN*8)/8;
+      for(const [id,v] of [['tx',T.x],['ty',T.y]]){const el=$('#'+id); if(el){el.value=v; $('#'+id+'-o').textContent=fmtVal(v,'in');}}}
+    const items=titleItems(T.x*IN,T.y*IN), sz=titleSize(), tb=[T.x*IN-sz.w/2,T.y*IN-sz.h/2,sz.w,sz.h];
+    lay.title={items,box:tb};
+    const [ox,oy]=designOffset(lay,gw,gh);
+    let gap=1e9; for(const it of lay.items){const b=itemBox(it); gap=Math.min(gap,boxGap(tb,[b[0]+ox,b[1]+oy,b[2],b[3]]));}
+    const edge=Math.min(tb[0],tb[1],gw-tb[0]-tb[2],gh-tb[1]-tb[3]);
+    R.add(gap>=6,'Room label clear of the design',gap>=6?`${(gap/IN).toFixed(1)} in from the nearest logo`:'it overlaps the design: pick another spot or shrink it');
+    R.add(edge>=10,'Room label on the glass',edge>=10?`${(edge/IN).toFixed(1)} in from the nearest glass edge`:'it runs off the glass or too close to the frame');
+    R.add(Math.min(sz.w,sz.h)<=ROLL_USABLE,'Room label fits the roll',`${(sz.w/IN).toFixed(1)} × ${(sz.h/IN).toFixed(1)} in, its own piece`);
+  }
+  { // letters: a gap under 1 mm may only run under 10 mm (the letter height), and never under 0.5 mm
+    const texts=[...lay.items.filter(i=>i.text),...(lay.title?lay.title.items:[])];
+    let worst=null; for(const t of texts){const need=t.cap>=10?1.0:0.5; if(t.gap<need&&(!worst||t.gap-need<worst.gap-worst.need))worst={...t,need};}
+    const tight=Math.min(...texts.map(t=>t.gap));
+    if(texts.length) R.add(!worst,'Letters spaced apart',worst?`"${worst.str}" has ${worst.gap.toFixed(2)} mm between letters at ${worst.cap} mm tall: raise its letter spacing`:`tightest gap ${tight.toFixed(1)} mm`);
+  }
+  last=lay; drawStage(lay,gw,gh); drawStatus(R,lay); save();
+}
+function drawStage(lay,gw,gh){
+  // everything in glass coordinates: glass at (0,0), design at its offset, room label wherever it was put
+  const close=state.view==='close', pad=close?40:60, [dx,dy]=designOffset(lay,gw,gh);
+  let bx=[dx,dy,dx+lay.W,dy+lay.H]; if(lay.title){const t=lay.title.box; bx=[Math.min(bx[0],t[0]),Math.min(bx[1],t[1]),Math.max(bx[2],t[0]+t[2]),Math.max(bx[3],t[1]+t[3])];}
+  if(!close) bx=[Math.min(bx[0],0),Math.min(bx[1],0),Math.max(bx[2],gw),Math.max(bx[3],gh)];
+  const vx=bx[0]-pad, vy=bx[1]-pad, VW=bx[2]-bx[0]+2*pad, VH=bx[3]-bx[1]+2*pad, gx=0, gy=0;
+  const vinyl=VINYL[state.vinyl][0], dark=state.room==='dark';
+  const glass=dark?['#3b4b56','#1d272e','#2a3740']:['#dfe8ec','#c9d6dc','#e8eff2'];
+  let s=`<defs><linearGradient id="gl" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${glass[0]}"/><stop offset=".55" stop-color="${glass[1]}"/><stop offset="1" stop-color="${glass[2]}"/></linearGradient></defs>`;
+  s+=`<rect x="${gx-18}" y="${gy-18}" width="${gw+36}" height="${gh+36}" rx="4" fill="#8f979b"/><rect x="${gx-18}" y="${gy-18}" width="${gw+36}" height="${gh+36}" rx="4" fill="none" stroke="#5c6467" stroke-width="2"/>`;
+  s+=`<rect x="${gx}" y="${gy}" width="${gw}" height="${gh}" fill="url(#gl)"/>`;
+  s+=`<path d="M${gx+gw*.08},${gy} L${gx+gw*.32},${gy} L${gx},${gy+gh*.42} L${gx},${gy+gh*.15}Z" fill="#fff" opacity="${dark?.05:.25}"/>`;
+  if($('#rollGuide').checked){
+    if(lay.strip==='v') s+=`<rect x="${dx+lay.W/2-152.4}" y="${dy-12}" width="304.8" height="${lay.H+24}" fill="none" stroke="#ffd166" stroke-width="1.6" stroke-dasharray="8 6" opacity=".9"/><text x="${dx+lay.W/2}" y="${dy-18}" font-size="13" text-anchor="middle" fill="#ffd166" font-family="IBM Plex Mono,monospace">12 in roll</text>`;
+    if(lay.strip==='h') s+=`<rect x="${dx-12}" y="${dy+lay.H/2-152.4}" width="${lay.W+24}" height="304.8" fill="none" stroke="#ffd166" stroke-width="1.6" stroke-dasharray="8 6" opacity=".9"/><text x="${dx}" y="${dy+lay.H/2-158}" font-size="13" fill="#ffd166" font-family="IBM Plex Mono,monospace">12 in roll</text>`;
+    if(lay.strip==='none') for(const it of lay.items.filter(i=>i.type==='logo')) s+=`<rect x="${dx+it.x-6}" y="${dy+it.y-6}" width="${it.w+12}" height="${it.h+12}" fill="none" stroke="#ffd166" stroke-width="1.4" stroke-dasharray="6 5" opacity=".8"/>`;
+  }
+  s+=`<g transform="translate(${dx},${dy})" fill="${vinyl}" fill-rule="evenodd">`;
+  for(const it of lay.items){
+    if(it.type==='logo'&&!it.ghost) s+=`<path transform="translate(${it.x},${it.y}) scale(${it.k})" d="${it.src.d}"/>`;
+    else if(it.type==='path') s+=`<path d="${it.d}"/>`;
+  }
+  s+='</g>';
+  if(lay.title){s+=`<g fill="${vinyl}" fill-rule="evenodd">`+lay.title.items.map(it=>`<path d="${it.d}"/>`).join('')+'</g>';
+    if($('#rollGuide').checked){const t=lay.title.box; s+=`<rect x="${t[0]-6}" y="${t[1]-6}" width="${t[2]+12}" height="${t[3]+12}" fill="none" stroke="#ffd166" stroke-width="1.4" stroke-dasharray="6 5" opacity=".8"/>`;}}
+  const svg=$('#stage'); svg.setAttribute('viewBox',`${vx} ${vy} ${VW} ${VH}`); svg.innerHTML=s;
+  $('#matlabel').textContent=close?`close-up · grid 1 in`:`${state.glassW} × ${state.glassH} in glass · grid 1 in`;
+  // cutting-mat grid tracks the drawing scale: 1 in squares
+  const box=$('#mat').getBoundingClientRect(), sc=Math.min(box.width/VW,box.height/VH), cell=IN*sc;
+  $('#mat').style.backgroundSize=`${cell}px ${cell}px,${cell}px ${cell}px,${cell*12}px ${cell*12}px,${cell*12}px ${cell*12}px`;
+  const ox=(box.width-VW*sc)/2-vx*sc, oy=(box.height-VH*sc)/2-vy*sc;
+  $('#mat').style.backgroundPosition=`${ox}px ${oy}px`;
+}
+function drawStatus(R,lay){
+  const st=$('#status'); st.innerHTML='';
+  for(const r of R.list){const c=document.createElement('span');c.className='chip '+r.level;c.innerHTML=`${r.ok?'✓':(r.level==='warn'?'!':'✕')} ${r.text} <i>${r.detail}</i>`;st.appendChild(c);}
+  const bad=R.list.filter(r=>r.level==='bad').length;
+  $('#meta').innerHTML=`<span>Overall <b>${(lay.W/IN).toFixed(2)} × ${(lay.H/IN).toFixed(2)} in</b></span><span><b>${lay.W.toFixed(1)} × ${lay.H.toFixed(1)} mm</b></span><span>${bad?`<b style="color:var(--bad)">${bad} rule${bad>1?'s':''} failing</b>`:'<b style="color:var(--ok)">All rules pass</b>'}</span>`;
+  $('#copy').disabled=false;
+}
+function exportSVG(){
+  const lay=last, gw=state.glassW*IN, gh=state.glassH*IN, [ox,oy]=designOffset(lay,gw,gh), parts=[];
+  for(const it of lay.items){
+    if(it.type==='logo'&&!it.ghost) parts.push([it.v,bake(it.src.d,it.k,it.x+ox,it.y+oy)]);
+    else if(it.type==='path') parts.push([it.band?'band':(it.text?'label':'shape'),bake(it.d,1,ox,oy)]);
+  }
+  let bx=[ox,oy,ox+lay.W,oy+lay.H];
+  if(lay.title){const t=lay.title.box; bx=[Math.min(bx[0],t[0]),Math.min(bx[1],t[1]),Math.max(bx[2],t[0]+t[2]),Math.max(bx[3],t[1]+t[3])];
+    lay.title.items.forEach(it=>parts.push(['room-label',it.d]));}
+  const W=bx[2]-bx[0], H=bx[3]-bx[1], c=CONCEPTS[state.concept];
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${W.toFixed(2)}mm" height="${H.toFixed(2)}mm" viewBox="0 0 ${W.toFixed(2)} ${H.toFixed(2)}">\n<title>${c.name} (custom)</title>\n<desc>Single-colour cut vinyl, mm. Exported from the IC Door Vinyl editor on a ${state.glassW} x ${state.glassH} in glass; artboard top-left is ${(bx[0]/IN).toFixed(2)} in from the glass left edge and ${(bx[1]/IN).toFixed(2)} in from its top. Re-run tools/verify.py before cutting.</desc>\n<g id="vinyl" fill="#000">\n`+
+    parts.map(([id,d],i)=>`  <path id="${id}-${i}" fill-rule="evenodd" d="${bake(d,1,-bx[0],-bx[1])}"/>`).join('\n')+`\n</g>\n</svg>\n`;
+}
+$('#copy').onclick=()=>{const t=exportSVG(),box=$('#exportbox');
+  const done=m=>{$('#toast').textContent=m;setTimeout(()=>$('#toast').textContent='',3500);};
+  navigator.clipboard.writeText(t).then(()=>done(`Copied ${(t.length/1024).toFixed(0)} KB of SVG. Paste it into a .svg file.`)).catch(()=>{box.hidden=false;box.value=t;box.select();done('Clipboard blocked here. The SVG is selected below; copy it with ⌘C.');});};
+if(location.protocol==='file:'||['localhost','127.0.0.1'].includes(location.hostname)){const b=$('#download');b.hidden=false;b.onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([exportSVG()],{type:'image/svg+xml'}));a.download=`ic-door-${state.concept}-custom.svg`;a.click();};}
+$('#reset').onclick=()=>{state.params[state.concept]=JSON.parse(JSON.stringify(CONCEPTS[state.concept].defaults));buildControls();update();};
+for(const id of ['glassW','glassH','labelsOn','rollGuide','lt-bb','lt-cs','lt-rc','lt-rk']) $('#'+id).addEventListener('input',update);
+$('#titleText').addEventListener('input',e=>{state.title.text=e.target.value;update();});
+$('#titleOn').addEventListener('input',e=>{state.title.on=e.target.checked;update();});
+if(state.glassW)$('#glassW').value=state.glassW; if(state.glassH)$('#glassH').value=state.glassH; $('#labelsOn').checked=state.labelsOn!==false;
+window.addEventListener('resize',()=>last&&drawStage(last,state.glassW*IN,state.glassH*IN));
+
+/* ---------- logo cards + verified table ---------- */
+function cards(){
+  const el=$('#cards'); el.innerHTML='';
+  for(const [v,L] of Object.entries(LOGOS)){
+    const n=L.native, c=document.createElement('div'); c.className='card';
+    c.innerHTML=`<div class="art"><svg viewBox="0 0 ${n.w} ${n.h}" role="img" aria-label="${L.title}"><path fill="#f3f5f6" fill-rule="evenodd" d="${n.d}"/></svg></div>
+      <div class="txt"><b>${L.title}</b><span>${L.note}</span><span class="mono">${L.file} · min ${L.small.min_w.toFixed(0)} mm wide</span></div>`;
+    el.appendChild(c);
+  }
+}
+function vtable(){
+  const tb=$('#vtable tbody'); tb.innerHTML='';
+  for(const r of DATA.verify){
+    const tr=document.createElement('tr'); const v=r.violations.length;
+    tr.innerHTML=`<td class="mono">${r.file}</td><td class="num">${(r.w_mm/IN).toFixed(1)} × ${(r.h_mm/IN).toFixed(1)} in</td><td class="num">${r.tiles}</td>
+      <td><span class="chip ${v?'bad':'ok'}">${v?v+' found':'none'}</span></td><td><span class="chip ${r.fits_roll?'ok':'bad'}">${r.fits_roll?'yes':'no'}</span></td>`;
+    tb.appendChild(tr);
+  }
+}
+$('#titleText').value=state.title.text; $('#titleOn').checked=state.title.on;
+buildStatic(); buildControls(); buildTitleControls(); cards(); vtable(); update();
+</script>

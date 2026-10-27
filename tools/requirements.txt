@@ -1,0 +1,8 @@
+numpy
+pillow
+opencv-python-headless
+shapely
+scikit-image
+potracer
+scipy
+fonttools
