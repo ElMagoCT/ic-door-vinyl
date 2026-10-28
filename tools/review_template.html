@@ -582,7 +582,7 @@ function exportSVG(){
 $('#copy').onclick=()=>{const t=exportSVG(),box=$('#exportbox');
   const done=m=>{$('#toast').textContent=m;setTimeout(()=>$('#toast').textContent='',3500);};
   navigator.clipboard.writeText(t).then(()=>done(`Copied ${(t.length/1024).toFixed(0)} KB of SVG. Paste it into a .svg file.`)).catch(()=>{box.hidden=false;box.value=t;box.select();done('Clipboard blocked here. The SVG is selected below; copy it with ⌘C.');});};
-if(location.protocol==='file:'||['localhost','127.0.0.1'].includes(location.hostname)){const b=$('#download');b.hidden=false;b.onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([exportSVG()],{type:'image/svg+xml'}));a.download=`ic-door-${state.concept}-custom.svg`;a.click();};}
+if(location.protocol==='file:'||['localhost','127.0.0.1'].includes(location.hostname)||location.hostname.endsWith('github.io')){const b=$('#download');b.hidden=false;b.onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([exportSVG()],{type:'image/svg+xml'}));a.download=`ic-door-${state.concept}-custom.svg`;a.click();};}
 $('#reset').onclick=()=>{state.params[state.concept]=JSON.parse(JSON.stringify(CONCEPTS[state.concept].defaults));buildControls();update();};
 for(const id of ['glassW','glassH','labelsOn','rollGuide','lt-bb','lt-cs','lt-rc','lt-rk']) $('#'+id).addEventListener('input',update);
 $('#titleText').addEventListener('input',e=>{state.title.text=e.target.value;update();});
