@@ -28,3 +28,10 @@ Everything generated must clear a 10% design margin (0.55 mm / 1.1 mm); `verify.
 finished files at exactly 0.5 / 1.0 mm. Letters are DIN Condensed Bold, processed at 10 mm (the minimum height).
 Rendering uses headless Google Chrome. Caches live in `.work/` (safe to delete).
 The Broncobots gear constants (13 teeth, fitted from the supplied art) are in `tools/concepts.py`.
+
+## Cutting (Graphtec CE6000 Plus over USB, 2026-10-28)
+See `CUTTING.md`. `tools/usbplot.c` (IOKit, USB printer class) + `tools/cut.py` (SVG -> HP-GL, inside-out
+order, centred across the width the cutter reports) cut straight from this Mac - no Graphtec software.
+`cut/ic-door-stack-v2.svg` is the current job: the editor's custom stack re-ordered with
+`tools/restack.py` (Robotics, RC, Rocketry, CubeSat). Build the sender with
+`clang -O2 -framework IOKit -framework CoreFoundation -o tools/usbplot tools/usbplot.c`.
